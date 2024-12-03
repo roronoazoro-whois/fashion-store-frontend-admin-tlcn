@@ -15,10 +15,8 @@ import {
   HomeLayout,
   Landing,
   Login,
-  Notifications,
   Orders,
   Products,
-  Profile,
   Register,
   Reviews,
   Users,
@@ -48,82 +46,138 @@ const router = createBrowserRouter([
       },
       {
         path: "/products",
-        element: <Products />,
+        element: (
+          <PrivateRoute>
+            <Products />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/products/create-product",
-        element: <CreateProduct />,
+        element: (
+          <PrivateRoute>
+            <CreateProduct />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/products/:id",
-        element: <EditProduct />,
+        element: (
+          <PrivateRoute>
+            <EditProduct />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/categories",
-        element: <Categories />,
+        element: (
+          <PrivateRoute>
+            <Categories />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/categories/create-category",
-        element: <CreateCategory />,
+        element: (
+          <PrivateRoute>
+            <CreateCategory />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/categories/:id",
-        element: <EditCategory />,
+        element: (
+          <PrivateRoute>
+            <EditCategory />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/orders",
-        element: <Orders />,
+        element: (
+          <PrivateRoute>
+            <Orders />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/orders/create-order",
-        element: <CreateOrder />,
+        element: (
+          <PrivateRoute>
+            <CreateOrder />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/orders/:id",
-        element: <EditOrder />,
+        element: (
+          <PrivateRoute>
+            <EditOrder />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/reviews",
-        element: <Reviews />,
+        element: (
+          <PrivateRoute>
+            <Reviews />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/reviews/create-review",
-        element: <CreateReview />,
+        element: (
+          <PrivateRoute>
+            <CreateReview />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/reviews/:id",
-        element: <EditReview />,
+        element: (
+          <PrivateRoute>
+            <EditReview />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/users",
-        element: <Users />,
+        element: (
+          <PrivateRoute>
+            <Users />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/users/:id",
-        element: <EditUser />,
+        element: (
+          <PrivateRoute>
+            <EditUser />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/users/create-user",
-        element: <CreateUser />,
+        element: (
+          <PrivateRoute>
+            <CreateUser />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/help-desk",
-        element: <HelpDesk />,
-      },
-      {
-        path: "/notifications",
-        element: <Notifications />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
+        element: (
+          <PrivateRoute>
+            <HelpDesk />
+          </PrivateRoute>
+        ),
       },
     ],
   },
 ]);
 
-function App() {
+const App = () => {
   return <RouterProvider router={router} />;
-}
+};
 
 export default App;

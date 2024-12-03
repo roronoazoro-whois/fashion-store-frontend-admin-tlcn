@@ -2,16 +2,20 @@ import { HiOutlineHome } from "react-icons/hi";
 import { HiOutlineDevicePhoneMobile } from "react-icons/hi2";
 import { HiOutlineTag } from "react-icons/hi";
 import { HiOutlineTruck } from "react-icons/hi";
-// import { HiOutlineStar } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { HiOutlineX } from "react-icons/hi";
 import { setSidebar } from "../features/dashboard/dashboardSlice";
 import { HiOutlineUser } from "react-icons/hi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 
 const Sidebar = () => {
   const { isSidebarOpen } = useAppSelector((state) => state.dashboard);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate(); // Use navigate for page redirection
+
+  // Accessing user context for logout
+  const { logout } = useUser();
 
   // Determine the sidebar class based on isSidebarOpen
   const sidebarClass: string = isSidebarOpen
@@ -25,7 +29,10 @@ const Sidebar = () => {
 
   // Logic for handling logout
   const handleLogout = () => {
-    // Add your logout logic here (e.g., clearing local storage, updating state, etc.)
+    // Call the logout function from the UserContext
+    logout();
+    // Redirect to the login or home page after logout
+    navigate("/login"); // You can change this to navigate to your desired route
     console.log("User logged out");
   };
 
@@ -85,17 +92,6 @@ const Sidebar = () => {
             <HiOutlineUser className="text-xl" />
             <span className="text-lg">Người dùng</span>
           </NavLink>
-          {/* <NavLink
-            to="/reviews"
-            className={(isActiveObj) =>
-              isActiveObj.isActive ? navActiveClass : navInactiveClass
-            }
-          >
-            <HiOutlineStar className="text-xl" />
-            <span className="text-lg">Reviews</span>
-          </NavLink> */}
-
-          {/* Logout button */}
           <button
             onClick={handleLogout}
             className="block flex items-center gap-4 py-4 px-6 dark:bg-red-600 bg-red-600 text-white cursor-pointer max-xl:py-3 rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg ml-6 mr-6 mt-4 mb-4"
@@ -108,4 +104,5 @@ const Sidebar = () => {
     </div>
   );
 };
+
 export default Sidebar;
