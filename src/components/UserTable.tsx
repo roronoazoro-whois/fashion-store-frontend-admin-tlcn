@@ -33,10 +33,10 @@ const UserTable = () => {
             scope="col"
             className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
           >
-            User
+            Người dùng
           </th>
           <th scope="col" className="py-2 pl-0 pr-8 font-semibold table-cell">
-            Email address
+            Email
           </th>
           <th scope="col" className="py-2 pl-0 pr-8 font-semibold table-cell">
             Role
@@ -45,7 +45,7 @@ const UserTable = () => {
             scope="col"
             className="py-2 pl-0 pr-8 font-semibold table-cell lg:pr-20"
           >
-            Date
+            Ngày gia nhập
           </th>
           <th
             scope="col"

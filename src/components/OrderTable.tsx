@@ -1,30 +1,45 @@
-// *********************
-// Role of the component: Order table component that displays the orders in a table
-// Name of the component: OrderTable.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <OrderTable />
-// Input parameters: no input parameters
-// Output: OrderTable component that displays the orders in a table
-// *********************
-
 import { nanoid } from "nanoid";
 import { Link } from "react-router-dom";
-import { HiOutlinePencil } from "react-icons/hi";
-import { HiOutlineTrash } from "react-icons/hi";
-import { HiOutlineEye } from "react-icons/hi";
-import { orderAdminItems } from "../utils/data";
+import { HiOutlinePencil, HiOutlineEye } from "react-icons/hi";
 
+// Định nghĩa kiểu dữ liệu của đơn hàng
+interface OrderSummary {
+  id: number;
+  orderDate: string;
+  total: number;
+  currentStatus: string;
+}
 
+interface OrderTableProps {
+  orders: OrderSummary[]; // Dữ liệu đơn hàng nhận từ props
+}
 
-const OrderTable = () => {
+const OrderTable = ({ orders }: OrderTableProps) => {
+  // Hàm để chọn màu sắc cho tình trạng đơn hàng
+  const getStatusClass = (status: string) => {
+    switch (status) {
+      case "Đã giao":
+        return "bg-green-500 text-white";
+      case "Chờ giao hàng":
+        return "bg-yellow-500 text-white";
+      case "Chờ xác nhận":
+        return "bg-blue-500 text-white";
+      case "Chờ lấy hàng":
+        return "bg-orange-500 text-white";
+      case "Đã hủy":
+        return "bg-red-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
+    }
+  };
+
   return (
     <table className="mt-6 w-full whitespace-nowrap text-left max-lg:block max-lg:overflow-x-scroll">
       <colgroup>
+        <col className="w-1/12" />
         <col className="w-full sm:w-4/12" />
         <col className="lg:w-4/12" />
         <col className="lg:w-2/12" />
-        <col className="lg:w-1/12" />
         <col className="lg:w-1/12" />
       </colgroup>
       <thead className="border-b border-white/10 text-sm leading-6 dark:text-whiteSecondary text-blackPrimary">
@@ -33,93 +48,80 @@ const OrderTable = () => {
             scope="col"
             className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
           >
-            Customer
+            STT
+          </th>
+          <th
+            scope="col"
+            className="py-2 pl-4 pr-8 font-semibold sm:pl-6 lg:pl-8"
+          >
+            Mã đơn hàng
           </th>
           <th scope="col" className="py-2 pl-0 pr-8 font-semibold table-cell">
-            Status
+            Tình trạng
           </th>
           <th scope="col" className="py-2 pl-0 pr-8 font-semibold table-cell">
-            Total
+            Tổng tiền
           </th>
           <th
             scope="col"
             className="py-2 pl-0 pr-8 font-semibold table-cell lg:pr-20"
           >
-            Date
+            Ngày khởi tạo
           </th>
           <th
             scope="col"
             className="py-2 pl-0 pr-4 text-right font-semibold table-cell sm:pr-6 lg:pr-8"
           >
-            Actions
+            Hành động
           </th>
         </tr>
       </thead>
       <tbody className="divide-y divide-white/5">
-        {orderAdminItems.map((item) => (
+        {orders.map((order, index) => (
           <tr key={nanoid()}>
             <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-              <div className="flex items-center gap-x-4">
-                <img
-                  src={item.user.imageUrl}
-                  alt=""
-                  className="h-8 w-8 rounded-full bg-gray-800"
-                />
-                <div className="truncate text-sm font-medium leading-6 dark:text-whiteSecondary text-blackPrimary">
-                  {item.user.name}
-                </div>
+              <div className="text-sm font-medium leading-6 dark:text-whiteSecondary text-blackPrimary">
+                {index + 1} {/* Số thứ tự */}
+              </div>
+            </td>
+            <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+              <div className="truncate text-sm font-medium leading-6 dark:text-whiteSecondary text-blackPrimary">
+                #{order.id} {/* Thêm dấu # trước mã đơn hàng */}
               </div>
             </td>
             <td className="py-4 pl-0 pr-4 table-cell pr-8">
-              <div className="flex gap-x-3">
-                <div
-                  className={`text-sm leading-6 py-1 px-2 ${
-                    item.status === "Completed" &&
-                    "dark:bg-green-900 bg-green-700 text-whiteSecondary font-semibold"
-                  } ${
-                    item.status === "On hold" &&
-                    "dark:bg-yellow-900 bg-yellow-700 text-whiteSecondary font-semibold"
-                  } ${
-                    item.status === "Cancelled" &&
-                    "dark:bg-red-900 bg-red-700 text-whiteSecondary font-semibold"
-                  } ${
-                    item.status === "Processing" &&
-                    "dark:bg-blue-900 bg-blue-700 text-whiteSecondary font-semibold"
-                  }`}
-                >
-                  {item.status}
-                </div>
+              <div
+                className={`text-sm leading-6 py-1 px-2 font-semibold ${getStatusClass(
+                  order.currentStatus
+                )}`}
+              >
+                {order.currentStatus}
               </div>
             </td>
             <td className="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
-              <div className="flex items-center gap-x-2 justify-start">
-                <div className="dark:text-rose-200 text-rose-500 block font-bold">
-                  {item.total}
-                </div>
+              <div className="text-sm font-medium text-blackPrimary dark:text-whiteSecondary">
+                {order.total.toLocaleString("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                })}
               </div>
             </td>
             <td className="py-4 pl-0 pr-8 text-sm leading-6 dark:text-whiteSecondary text-blackPrimary table-cell lg:pr-20">
-              {item.date}
+              {order.orderDate}
             </td>
             <td className="py-4 pl-0 pr-4 text-right text-sm leading-6 dark:text-whiteSecondary text-blackPrimary table-cell pr-6 lg:pr-8">
               <div className="flex gap-x-1 justify-end">
                 <Link
-                  to="/orders/1"
-                  className="dark:bg-blackPrimary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
+                  to={`/orders/${order.id}`}
+                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlinePencil className="text-lg" />
                 </Link>
                 <Link
-                  to="/orders/1"
-                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
+                  to={`/orders/${order.id}`}
+                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlineEye className="text-lg" />
-                </Link>
-                <Link
-                  to="#"
-                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
-                >
-                  <HiOutlineTrash className="text-lg" />
                 </Link>
               </div>
             </td>
@@ -129,4 +131,5 @@ const OrderTable = () => {
     </table>
   );
 };
+
 export default OrderTable;
