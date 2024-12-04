@@ -148,48 +148,28 @@ export const getOrderById = async (
   }
 };
 
-// Hàm gọi API để lấy danh sách đơn hàng với phân trang
 export const getOrders = async (
   page: number = 1,
-  size: number = 2,
+  size: number = 15,
   token: string
-): Promise<OrderSummary[]> => {
+): Promise<OrdersListResponse["data"]> => {
   try {
-    // Đảm bảo token được truyền vào khi gọi API
-    if (!token) {
-      throw new Error("Token là bắt buộc!");
-    }
-
-    // Thiết lập headers với Authorization Bearer token
     const headers = {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
 
-    // Gửi yêu cầu GET để lấy danh sách đơn hàng với phân trang
     const response = await axios.get<OrdersListResponse>(
-      `${BASE_URL}/all?page=${page}&size=${size}`,
+      `${BASE_URL}/all?page=${page + 1}&size=${size}`,
       { headers }
     );
 
-    // Trả về danh sách đơn hàng nếu API trả về thành công
     if (response.data.success) {
-      return response.data.data.content;
+      return response.data.data;
     } else {
       throw new Error(response.data.message || "Lỗi không xác định");
     }
   } catch (error) {
-    // Kiểm tra lỗi từ server nếu có
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        console.error("Error response from server:", error.response.data);
-        throw new Error(error.response.data.message || "Lỗi không xác định");
-      } else if (error.request) {
-        console.error("No response from server:", error.request);
-        throw new Error("Không thể kết nối đến server");
-      }
-    }
-    console.error("Unexpected error:", error);
     throw new Error("Lỗi không xác định");
   }
 };
@@ -252,4 +232,3 @@ export const updateOrderStatus = async (
     throw new Error("Lỗi không xác định");
   }
 };
-

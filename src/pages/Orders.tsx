@@ -12,12 +12,12 @@ interface OrderSummary {
 }
 
 const Orders = () => {
-  const [currentPage, setCurrentPage] = useState(1); // Trang bắt đầu từ 1
+  const [currentPage, setCurrentPage] = useState(0); // Trang bắt đầu từ 1
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
   const [orders, setOrders] = useState<OrderSummary[]>([]); // Trạng thái lưu danh sách đơn hàng
 
-  // Lấy danh sách đơn hàng khi trang thay đổi
   useEffect(() => {
+    console.log("Fetching orders for page:", currentPage);
     const fetchOrders = async () => {
       try {
         const token = getUserFromLocalStorage()?.token;
@@ -25,15 +25,13 @@ const Orders = () => {
           throw new Error("Token is undefined");
         }
         const data = await getOrders(
-          currentPage, // Truyền trực tiếp currentPage, API yêu cầu bắt đầu từ 1
+          currentPage,
           15, // Mỗi trang có 15 sản phẩm
           token
-        ); // Gọi API với phân trang
-        setOrders(data);
-
-        // Tính tổng số trang dựa trên số đơn hàng trả về
-        const totalItems = data.length;
-        setTotalPages(Math.ceil(totalItems / 15)); // Tính tổng số trang
+        );
+        console.log("Fetched orders:", data);
+        setOrders(data.content);
+        setTotalPages(data.totalPages); // Cập nhật tổng số trang từ API
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
