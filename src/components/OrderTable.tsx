@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { Link } from "react-router-dom";
-import { HiOutlinePencil, HiOutlineEye } from "react-icons/hi";
+import { HiOutlinePencil } from "react-icons/hi";
 
 // Định nghĩa kiểu dữ liệu của đơn hàng
 interface OrderSummary {
@@ -68,12 +68,6 @@ const OrderTable = ({ orders }: OrderTableProps) => {
           >
             Ngày khởi tạo
           </th>
-          <th
-            scope="col"
-            className="py-2 pl-0 pr-4 text-right font-semibold table-cell sm:pr-6 lg:pr-8"
-          >
-            Hành động
-          </th>
         </tr>
       </thead>
       <tbody className="divide-y divide-white/5">
@@ -116,12 +110,6 @@ const OrderTable = ({ orders }: OrderTableProps) => {
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlinePencil className="text-lg" />
-                </Link>
-                <Link
-                  to={`/orders/${order.id}`}
-                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer hover:border-gray-400"
-                >
-                  <HiOutlineEye className="text-lg" />
                 </Link>
               </div>
             </td>

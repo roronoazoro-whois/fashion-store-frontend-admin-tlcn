@@ -4,7 +4,7 @@ import axios from "axios";
 const BASE_URL = "http://localhost:8080/orders";
 
 // Định nghĩa kiểu dữ liệu cho các sản phẩm trong đơn hàng
-interface OrderItem {
+export interface OrderItem {
   productId: number;
   size: string;
   color: string;
@@ -13,7 +13,7 @@ interface OrderItem {
 }
 
 // Định nghĩa kiểu dữ liệu cho thông tin chi tiết giá
-interface PriceDetails {
+export interface PriceDetails {
   subTotal: number;
   shipping: number;
   discount: number;
@@ -21,7 +21,7 @@ interface PriceDetails {
 }
 
 // Định nghĩa kiểu dữ liệu cho địa chỉ giao hàng
-interface ShippingAddress {
+export interface ShippingAddress {
   id: number | null;
   fullName: string;
   phoneNumber: string;
@@ -33,7 +33,7 @@ interface ShippingAddress {
 }
 
 // Định nghĩa kiểu dữ liệu cho trạng thái đơn hàng
-interface OrderStatus {
+export interface OrderStatus {
   statusName: string;
   description: string;
   updateAt: string;
@@ -41,7 +41,7 @@ interface OrderStatus {
 }
 
 // Định nghĩa kiểu dữ liệu cho đơn hàng
-interface OrderData {
+export interface OrderData {
   items: OrderItem[];
   priceDetails: PriceDetails;
   shippingAddress: ShippingAddress;
@@ -193,3 +193,63 @@ export const getOrders = async (
     throw new Error("Lỗi không xác định");
   }
 };
+
+// Hàm gọi API để cập nhật trạng thái chi tiết đơn hàng
+export const updateOrderStatus = async (
+  orderId: string,
+  statusCode: string,
+  token: string
+): Promise<string> => {
+  try {
+    // Đảm bảo token, orderId, và statusCode được truyền vào khi gọi API
+    if (!token) {
+      throw new Error("Token là bắt buộc!");
+    }
+
+    if (!orderId) {
+      throw new Error("orderId là bắt buộc!");
+    }
+
+    if (!statusCode) {
+      throw new Error("statusCode là bắt buộc!");
+    }
+
+    // Thiết lập headers với Authorization Bearer token
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+
+    // Gửi yêu cầu POST để cập nhật trạng thái chi tiết đơn hàng
+    const response = await axios.post<{
+      message: string;
+      success: boolean;
+      data: null;
+    }>(
+      `${BASE_URL}/${orderId}/update-status?statusCode=${statusCode}`,
+      {},
+      { headers }
+    );
+
+    // Kiểm tra phản hồi và trả về thông báo từ server
+    if (response.data.success) {
+      return response.data.message;
+    } else {
+      throw new Error(response.data.message || "Lỗi không xác định");
+    }
+  } catch (error) {
+    // Kiểm tra lỗi từ server nếu có
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        console.error("Error response from server:", error.response.data);
+        throw new Error(error.response.data.message || "Lỗi không xác định");
+      } else if (error.request) {
+        console.error("No response from server:", error.request);
+        throw new Error("Không thể kết nối đến server");
+      }
+    }
+    console.error("Unexpected error:", error);
+    throw new Error("Lỗi không xác định");
+  }
+};
+

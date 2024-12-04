@@ -42,7 +42,7 @@ const Categories = () => {
           <div className="px-4 sm:px-6 lg:px-8 flex justify-between items-center max-sm:flex-col max-sm:gap-5">
             <div className="flex flex-col gap-3">
               <h2 className="text-3xl font-bold leading-7 dark:text-whiteSecondary text-blackPrimary">
-                Danh mục sản phẩm
+                Tất cả danh mục
               </h2>
             </div>
             <div className="flex gap-x-2 max-[370px]:flex-col max-[370px]:gap-2 max-[370px]:items-center">
