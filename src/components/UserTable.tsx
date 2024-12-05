@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import { Link } from "react-router-dom";
 import { HiOutlinePencil } from "react-icons/hi";
+import { useUser } from "./UserContext"; // Giả sử bạn có UserContext để lấy thông tin người dùng
 
 // Định nghĩa kiểu dữ liệu của người dùng
 interface User {
@@ -18,6 +19,14 @@ interface UserTableProps {
 const UserTable = ({ users }: UserTableProps) => {
   const defaultAvatar =
     "https://res.cloudinary.com/doo4qviqi/image/upload/v1730703669/defaultavatar_uhpwxn.png"; // Đường dẫn avatar mặc định
+
+  // Lấy thông tin người dùng đăng nhập từ context
+  const { user } = useUser(); // Giả sử 'user' chứa thông tin người dùng hiện tại
+
+  // Lọc danh sách người dùng, loại bỏ người có email trùng với người đang đăng nhập
+  const filteredUsers = users.filter(
+    (userItem) => userItem.email !== user?.email
+  );
 
   // Hàm trả về giá trị nếu nó là null
   const getValueOrPlaceholder = (
@@ -70,7 +79,7 @@ const UserTable = ({ users }: UserTableProps) => {
         </tr>
       </thead>
       <tbody className="divide-y divide-white/5">
-        {users.map((user, index) => (
+        {filteredUsers.map((user, index) => (
           <tr key={nanoid()}>
             <td className="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8 text-center">
               {index + 1} {/* Hiển thị STT, bắt đầu từ 1 */}
