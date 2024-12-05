@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // URL cơ bản của API
-const BASE_URL = "http://localhost:8080/product";
+const BASE_URL = "http://localhost:8080/product"; // Đã sửa đúng endpoint cho sản phẩm
 
 // Định nghĩa kiểu dữ liệu cho hình ảnh
 interface Image {
@@ -132,6 +132,108 @@ export const getColorsByProductId = async (
     return response.data._embedded.color;
   } catch (error) {
     console.error("Error fetching colors:", error);
+    throw error;
+  }
+};
+
+const BASE_URL2 = "http://localhost:8080/products"; // Đã sửa đúng endpoint cho sản phẩm
+
+// ------------------------ API Gọi Để Tạo Mới Sản Phẩm ------------------------
+
+// Định nghĩa kiểu dữ liệu cho DTO ProductCreate
+interface ProductCreateDto {
+  name: string;
+  description: string;
+  price: number;
+  salePrice: number;
+  categorySlugs: string[];
+  colorNames: string[];
+  sizeNames: string[];
+}
+
+// Định nghĩa kiểu dữ liệu cho phản hồi khi tạo sản phẩm
+interface CreateProductResponse {
+  message: string;
+  success: boolean;
+  data: number; // ID sản phẩm mới
+}
+
+// Tạo sản phẩm mới
+export const createProduct = async (
+  productCreateDto: ProductCreateDto,
+  token: string // Thêm token vào tham số hàm
+) => {
+  try {
+    const response = await axios.post<CreateProductResponse>(
+      `${BASE_URL2}/create`,
+      productCreateDto,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token qua header
+        },
+      }
+    );
+
+    if (response.data.success) {
+      console.log(
+        "Sản phẩm đã được tạo thành công với ID:",
+        response.data.data
+      );
+      return response.data.data; // Trả về ID sản phẩm mới
+    } else {
+      console.error("Tạo sản phẩm thất bại:", response.data.message);
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi khi tạo sản phẩm:", error);
+    throw error;
+  }
+};
+
+// ------------------------ API Gọi Để Tạo Mới Ảnh Cho Sản Phẩm ------------------------
+
+// Định nghĩa kiểu dữ liệu cho phản hồi khi tạo ảnh
+interface CreateProductImagesResponse {
+  message: string;
+  success: boolean;
+  data: null;
+}
+
+// Định nghĩa kiểu dữ liệu cho DTO tạo ảnh
+interface CreateProductImagesDto {
+  imageUrls: string[];
+}
+
+// Tạo ảnh cho sản phẩm
+// Tạo ảnh cho sản phẩm
+export const createProductImages = async (
+  productId: number,
+  imageUrls: string[],
+  token: string // Thêm token vào tham số hàm
+): Promise<void> => {
+  const requestDto: CreateProductImagesDto = {
+    imageUrls: imageUrls,
+  };
+
+  try {
+    const response = await axios.post<CreateProductImagesResponse>(
+      `${BASE_URL2}/${productId}/images`,
+      requestDto,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token qua header
+        },
+      }
+    );
+
+    if (response.data.success) {
+      console.log("Tạo ảnh cho sản phẩm thành công");
+    } else {
+      console.error("Tạo ảnh cho sản phẩm thất bại:", response.data.message);
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi khi tạo ảnh cho sản phẩm:", error);
     throw error;
   }
 };
