@@ -22,6 +22,9 @@ import {
   Users,
 } from "./pages";
 import PrivateRoute from "./components/PrivateRoute";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS của react-toastify
+import { ToastContainer } from "react-toastify"; // Import ToastContainer để hiển thị thông báo
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +46,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Landing />,
+      },
+      {
+        path: "/profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/products",
@@ -149,7 +160,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/users/:id",
+        path: "/users/:email",
         element: (
           <PrivateRoute>
             <EditUser />
@@ -177,7 +188,13 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      {/* Thêm ToastContainer ở đây để hiển thị thông báo */}
+      <ToastContainer />
+    </>
+  );
 };
 
 export default App;
