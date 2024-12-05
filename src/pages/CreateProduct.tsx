@@ -34,6 +34,35 @@ const categories: Category[] = [
   { id: 1, name: "Áo thun", slug: "ao-thun" },
   { id: 2, name: "Quần áo", slug: "quan-ao" },
   { id: 3, name: "Phụ kiện", slug: "phu-kien" },
+  { id: 4, name: "Áo nam", slug: "ao-nam" },
+  { id: 5, name: "Áo polo", slug: "ao-polo" },
+  { id: 6, name: "Áo sơ mi", slug: "ao-so-mi" },
+  { id: 7, name: "Áo dài tay", slug: "ao-dai-tay" },
+  { id: 8, name: "Áo khoác", slug: "ao-khoac" },
+  { id: 9, name: "Áo Tanktop", slug: "ao-tank-top" },
+  { id: 10, name: "Áo thể thao", slug: "ao-the-thao" },
+  { id: 11, name: "Quần nam", slug: "quan-nam" },
+  { id: 12, name: "Quần shorts", slug: "quan-shorts" },
+  { id: 13, name: "Quần jeans", slug: "quan-jeans" },
+  { id: 14, name: "Quần dài", slug: "quan-dai" },
+  { id: 15, name: "Quần thể thao", slug: "quan-the-thao" },
+  { id: 16, name: "Quần lót", slug: "quan-lot" },
+  { id: 17, name: "Quần bơi", slug: "quan-boi" },
+  { id: 18, name: "Tất/Vớ", slug: "tat-vo" },
+  { id: 19, name: "Mũ/Nón", slug: "mu-non" },
+  { id: 20, name: "Túi", slug: "tui" },
+  {
+    id: 21,
+    name: "Quần lót Brief (Tam giác)",
+    slug: "quan-lot-brief-tam-giac",
+  },
+  { id: 22, name: "Quần lót Trunk (Boxer)", slug: "quan-lot-trunk-boxer" },
+  { id: 23, name: "Boxer Brief (Boxer dài)", slug: "boxer-brief-boxer-dai" },
+  { id: 24, name: "Long Leg", slug: "long-leg" },
+  { id: 25, name: "Boxer Shorts", slug: "boxer-shorts" },
+  { id: 26, name: "Thể thao", slug: "the-thao" },
+  { id: 27, name: "Quần Joggers", slug: "quan-joggers" },
+  { id: 28, name: "Mặc hàng ngày", slug: "mac-hang-ngay" },
 ];
 
 const colors: Color[] = [
@@ -42,12 +71,17 @@ const colors: Color[] = [
   { id: 3, code: "#7f8c8d", name: "Xám" },
   { id: 4, code: "#ffffff", name: "Trắng" },
   { id: 5, code: "#e74c3c", name: "Đỏ" },
+  { id: 6, code: "#2c3e50", name: "Xanh navy" },
+  { id: 7, code: "#2e8b57", name: "Xanh rêu" },
+  { id: 8, code: "#f5f5dc", name: "Kem" },
 ];
 
 const sizes: Size[] = [
   { id: 1, name: "S" },
   { id: 2, name: "M" },
   { id: 3, name: "L" },
+  { id: 4, name: "39-42" },
+  { id: 5, name: "43-46" },
 ];
 
 interface QuantityMap {
