@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { Link } from "react-router-dom";
-import { HiOutlinePencil, HiOutlineTrash, HiOutlineEye } from "react-icons/hi";
+import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { getImagesByProductId } from "../api/ProductAPI"; // Đảm bảo bạn import đúng API
 
@@ -150,12 +150,6 @@ const ProductTable = ({ products }: ProductTableProps) => {
                   className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer hover:border-gray-400"
                 >
                   <HiOutlinePencil className="text-lg" />
-                </Link>
-                <Link
-                  to={`/products/${item.id}`}
-                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer hover:border-gray-400"
-                >
-                  <HiOutlineEye className="text-lg" />
                 </Link>
                 <Link
                   to="#"

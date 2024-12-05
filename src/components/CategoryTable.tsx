@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { HiOutlinePencil } from "react-icons/hi";
 import { HiOutlineTrash } from "react-icons/hi";
-import { HiOutlineEye } from "react-icons/hi";
 
 // Nhận props categories từ component cha
 interface Category {
@@ -75,12 +74,6 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ categories }) => {
                   className="dark:bg-blackPrimary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
                 >
                   <HiOutlinePencil className="text-lg" />
-                </Link>
-                <Link
-                  to={`/categories/${category.id}`}
-                  className="dark:bg-blackPrimary bg-whiteSecondary dark:text-whiteSecondary text-blackPrimary border border-gray-600 w-8 h-8 block flex justify-center items-center cursor-pointer dark:hover:border-gray-500 hover:border-gray-400"
-                >
-                  <HiOutlineEye className="text-lg" />
                 </Link>
                 <Link
                   to="#"
