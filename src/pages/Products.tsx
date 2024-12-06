@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react"; // Import useState và useEffect
-import { useNavigate } from "react-router-dom"; // Import useNavigate từ react-router-dom
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Pagination, ProductTable, Sidebar, WhiteButton } from "../components";
 import { HiOutlinePlus } from "react-icons/hi";
 import { HiOutlineSearch } from "react-icons/hi";
-import { getProductsWithPagination } from "../api/ProductAPI"; // Import hàm gọi API
+import {
+  getProductsWithPagination,
+  softDeleteProduct,
+} from "../api/ProductAPI"; // Import hàm gọi API
+import { toast } from "react-toastify"; // Import thư viện toast thông báo
 
-// Định nghĩa kiểu Product
 interface Product {
   id: number;
   name: string;
@@ -16,6 +19,7 @@ interface Product {
   brand: string;
   detail: string | null;
   createdAt: string;
+  deleted: boolean;
   quantity: number;
   _links: {
     self: { href: string };
@@ -36,19 +40,39 @@ const Products = () => {
     setCurrentPage(page); // Cập nhật trang hiện tại
   };
 
-  // Lấy dữ liệu sản phẩm khi trang thay đổi
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const data = await getProductsWithPagination(currentPage, 15); // Lấy dữ liệu 15 sản phẩm mỗi trang
-        setProducts(data._embedded.product); // Cập nhật danh sách sản phẩm
-        setTotalPages(data.page.totalPages); // Cập nhật tổng số trang
-      } catch (error) {
-        console.error("Error fetching products:", error);
+  const handleDeleteProduct = async (productId: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token không hợp lệ");
       }
-    };
+      await softDeleteProduct(productId, token); // Gọi API xóa sản phẩm
+      fetchProducts(); // Gọi lại API để tải danh sách sản phẩm mới
+      toast.success("Xóa sản phẩm thành công!"); // Thông báo thành công
+    } catch (error) {
+      console.error("Lỗi khi xóa sản phẩm:", error);
+      toast.error("Xóa sản phẩm thất bại!"); // Thông báo lỗi
+    }
+  };
 
-    fetchProducts();
+  // Hàm lấy lại dữ liệu sản phẩm
+  const fetchProducts = async () => {
+    try {
+      const data = await getProductsWithPagination(currentPage, 15); // Lấy dữ liệu 15 sản phẩm mỗi trang
+      setProducts(data._embedded.product); // Cập nhật danh sách sản phẩm
+      setTotalPages(data.page.totalPages); // Cập nhật tổng số trang
+
+      // Nếu sản phẩm rỗng và không phải trang đầu tiên, chuyển sang trang trước
+      if (data._embedded.product.length === 0 && currentPage > 0) {
+        setCurrentPage(currentPage - 1); // Chuyển sang trang trước
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts(); // Gọi hàm để tải dữ liệu sản phẩm khi trang được load
   }, [currentPage]); // Gọi lại khi trang thay đổi
 
   return (
@@ -85,7 +109,10 @@ const Products = () => {
             </div>
           </div>
           {/* Hiển thị bảng sản phẩm với dữ liệu từ API */}
-          <ProductTable products={products} />
+          <ProductTable
+            products={products}
+            onProductDelete={handleDeleteProduct}
+          />
           <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
             <Pagination
               currentPage={currentPage}

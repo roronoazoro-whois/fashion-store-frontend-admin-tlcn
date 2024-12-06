@@ -35,6 +35,7 @@ interface Product {
   brand: string;
   detail: string | null;
   createdAt: string;
+  deleted: boolean;
   quantity: number;
   _links: {
     self: { href: string };
@@ -71,7 +72,7 @@ export const getProductsWithPagination = async (
 ): Promise<ProductPage> => {
   try {
     const response = await axios.get<ProductPage>(
-      `${BASE_URL}?page=${page}&size=${size}`
+      `${BASE_URL}/search/findByDeletedFalse?page=${page}&size=${size}`
     );
     return response.data;
   } catch (error) {
@@ -234,6 +235,36 @@ export const createProductImages = async (
     }
   } catch (error) {
     console.error("Lỗi khi tạo ảnh cho sản phẩm:", error);
+    throw error;
+  }
+};
+
+// API Gọi Để Xóa Mềm Sản Phẩm
+export const softDeleteProduct = async (
+  productId: number,
+  token: string
+): Promise<void> => {
+  try {
+    const response = await axios.delete(
+      `${BASE_URL2}/delete/${productId}`, // Địa chỉ API xóa sản phẩm
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token qua header
+        },
+      }
+    );
+
+    if (response.data.success) {
+      console.log(`Sản phẩm với ID ${productId} đã được xóa thành công`);
+    } else {
+      console.error(
+        `Xóa sản phẩm với ID ${productId} thất bại:`,
+        response.data.message
+      );
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi khi xóa sản phẩm:", error);
     throw error;
   }
 };
