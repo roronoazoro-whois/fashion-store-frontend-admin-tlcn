@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom"; // Import useNavigate từ react-router-dom
 import { HiOutlineSave } from "react-icons/hi";
 import {
-  ImageUpload,
   InputWithLabel,
   Sidebar,
   SimpleInput,
@@ -73,14 +72,6 @@ const CreateUser = () => {
                   <SelectInput selectList={roles} />
                 </InputWithLabel>
               </div>
-            </div>
-
-            {/* right div */}
-            <div>
-              <h3 className="text-2xl font-bold leading-7 dark:text-whiteSecondary text-blackPrimary">
-                Tải ảnh người dùng
-              </h3>
-              <ImageUpload />
             </div>
           </div>
         </div>
