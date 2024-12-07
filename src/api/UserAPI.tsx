@@ -274,3 +274,30 @@ export const updateAvatar = async (
     throw error;
   }
 };
+
+// Định nghĩa kiểu dữ liệu trả về khi đăng ký người dùng
+interface RegisterUserResponse {
+  message: string;
+  success: boolean;
+  data: null;
+}
+
+// Hàm đăng ký người dùng
+export const registerUser = async (userData: {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}): Promise<RegisterUserResponse> => {
+  try {
+    const response = await axios.post<RegisterUserResponse>(
+      `${BASE_URL}/register`,
+      userData
+    );
+
+    return response.data; // Trả về dữ liệu phản hồi từ server
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw error; // Ném lỗi để xử lý ở nơi khác nếu cần
+  }
+};
