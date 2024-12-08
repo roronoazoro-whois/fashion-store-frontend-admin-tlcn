@@ -101,10 +101,63 @@ const CreateProduct = () => {
   const [images, setImages] = useState<File[]>([]); // Lưu trữ các file ảnh thực tế
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   let urlImages: string[] = [];
 
   const handleImagesSelected = (files: File[]) => {
     setImages(files); // Lưu trữ file thực tế thay vì URL
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  interface ConfirmationModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+  }
+
+  const ConfirmationModal = ({
+    isOpen,
+    onClose,
+    onConfirm,
+  }: ConfirmationModalProps) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <h3 className="text-xl font-semibold">Xác nhận lưu sản phẩm</h3>
+          <p className="mt-4">Bạn có chắc chắn muốn lưu sản phẩm này không?</p>
+          <div className="mt-6 flex justify-end gap-4">
+            <button
+              className="bg-gray-500 text-white px-4 py-2 rounded-md"
+              onClick={onClose}
+            >
+              Hủy
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              onClick={() => {
+                onConfirm(); // Thực hiện lưu khi người dùng xác nhận
+                onClose(); // Đóng modal
+              }}
+            >
+              Xác nhận
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const handleSaveWithConfirmation = () => {
+    handleOpenModal(); // Mở modal khi nhấn "Lưu lại"
   };
 
   // Hàm xử lý thay đổi khi chọn màu sắc
@@ -348,7 +401,7 @@ const CreateProduct = () => {
               Thêm sản phẩm mới
             </h2>
             <button
-              onClick={handleSave}
+              onClick={handleSaveWithConfirmation}
               className="dark:bg-whiteSecondary bg-blackPrimary w-48 py-2 text-lg dark:hover:bg-white hover:bg-black duration-200 flex items-center justify-center gap-x-2"
               disabled={loading} // Disable button khi đang loading
             >
@@ -547,6 +600,12 @@ const CreateProduct = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleSave}
+      />
     </div>
   );
 };

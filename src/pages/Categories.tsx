@@ -57,15 +57,6 @@ const Categories = () => {
               </WhiteButton>
             </div>
           </div>
-          <div className="px-4 sm:px-6 lg:px-8 flex justify-between items-center mt-5 max-sm:flex-col max-sm:gap-2">
-            <div className="relative">
-              <input
-                type="text"
-                className="w-60 h-10 border dark:bg-blackPrimary border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 indent-10 dark:focus:border-gray-500 focus:border-gray-400"
-                placeholder="Nhập tên danh mục"
-              />
-            </div>
-          </div>
           <CategoryTable categories={categories} />
           <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
             <Pagination

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pagination, ProductTable, Sidebar, WhiteButton } from "../components";
 import { HiOutlinePlus } from "react-icons/hi";
-import { HiOutlineSearch } from "react-icons/hi";
 import {
   getProductsWithPagination,
   softDeleteProduct,
@@ -99,14 +98,14 @@ const Products = () => {
             </div>
           </div>
           <div className="px-4 sm:px-6 lg:px-8 flex justify-between items-center mt-5 max-sm:flex-col max-sm:gap-2">
-            <div className="relative">
+            {/* <div className="relative">
               <HiOutlineSearch className="text-gray-400 text-lg absolute top-3 left-3" />
               <input
                 type="text"
                 className="w-60 h-10 border dark:bg-blackPrimary bg-white border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 indent-10 focus:border-gray-500"
                 placeholder="Nhập tên sản phẩm"
               />
-            </div>
+            </div> */}
           </div>
           {/* Hiển thị bảng sản phẩm với dữ liệu từ API */}
           <ProductTable

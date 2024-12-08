@@ -191,6 +191,38 @@ export const createProduct = async (
   }
 };
 
+export const updateProduct = async (
+  productCreateDto: ProductCreateDto,
+  token: string, // Thêm token vào tham số hàm
+  productId: number
+) => {
+  try {
+    const response = await axios.put<CreateProductResponse>(
+      `${BASE_URL2}/update/${productId}`,
+      productCreateDto,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token qua header
+        },
+      }
+    );
+
+    if (response.data.success) {
+      console.log(
+        "Sản phẩm đã được cập nhật thành công với ID:",
+        response.data.data
+      );
+      return response.data.data; // Trả về ID sản phẩm mới
+    } else {
+      console.error("Cập nhật sản phẩm thất bại:", response.data.message);
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi khi cập nhật sản phẩm:", error);
+    throw error;
+  }
+};
+
 // ------------------------ API Gọi Để Tạo Mới Ảnh Cho Sản Phẩm ------------------------
 
 // Định nghĩa kiểu dữ liệu cho phản hồi khi tạo ảnh
@@ -239,6 +271,37 @@ export const createProductImages = async (
   }
 };
 
+export const updateProductImages = async (
+  productId: number,
+  imageUrls: string[],
+  token: string // Thêm token vào tham số hàm
+): Promise<void> => {
+  const requestDto: CreateProductImagesDto = {
+    imageUrls: imageUrls,
+  };
+  try {
+    const response = await axios.put<CreateProductImagesResponse>(
+      `${BASE_URL2}/${productId}/images`,
+      requestDto,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token qua header
+        },
+      }
+    );
+
+    if (response.data.success) {
+      console.log("Tạo ảnh cho sản phẩm thành công");
+    } else {
+      console.error("Tạo ảnh cho sản phẩm thất bại:", response.data.message);
+      throw new Error(response.data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi khi tạo ảnh cho sản phẩm:", error);
+    throw error;
+  }
+};
+
 // API Gọi Để Xóa Mềm Sản Phẩm
 export const softDeleteProduct = async (
   productId: number,
@@ -265,6 +328,40 @@ export const softDeleteProduct = async (
     }
   } catch (error) {
     console.error("Lỗi khi xóa sản phẩm:", error);
+    throw error;
+  }
+};
+
+interface ProductVariant {
+  colorName: string;
+  sizeName: string;
+  quantity: number;
+}
+
+interface ProductResponse {
+  message: string;
+  success: boolean;
+  data: {
+    name: string;
+    description: string;
+    price: number;
+    salePrice: number;
+    categorySlugs: string[];
+    colorNames: string[];
+    sizeNames: string[];
+    variants: ProductVariant[]; // Thêm mảng variants vào đây
+  } | null;
+}
+
+// Lấy thông tin sản phẩm theo ID
+export const getProductDetailsById = async (
+  id: number
+): Promise<ProductResponse> => {
+  try {
+    const response = await axios.get<ProductResponse>(`${BASE_URL2}/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching product with ID ${id}:`, error);
     throw error;
   }
 };
