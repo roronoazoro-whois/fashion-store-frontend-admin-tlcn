@@ -14,6 +14,13 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState(""); // Từ khoá tìm kiếm người dùng
   const navigate = useNavigate(); // Khai báo hàm navigate để điều hướng
 
+  // Effect để reset currentPage khi searchTerm thay đổi
+  useEffect(() => {
+    if (searchTerm) {
+      setCurrentPage(0); // Reset currentPage về 0 khi bắt đầu tìm kiếm
+    }
+  }, [searchTerm]); // Theo dõi khi searchTerm thay đổi
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -21,7 +28,8 @@ const Users = () => {
         if (!token) {
           throw new Error("Token is undefined");
         }
-        const data = await getUsersList(currentPage, 15, token); // Lấy danh sách người dùng từ API
+        const pageSize = searchTerm ? 200 : 15; // Điều chỉnh số lượng sản phẩm mỗi trang
+        const data = await getUsersList(currentPage, pageSize, token); // Lấy danh sách người dùng từ API
         setUsersData(data.data); // Cập nhật dữ liệu bao gồm danh sách người dùng và thông tin phân trang
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -30,6 +38,13 @@ const Users = () => {
 
     fetchUsers();
   }, [currentPage, searchTerm]); // Lấy lại dữ liệu khi trang hoặc từ khoá tìm kiếm thay đổi
+
+  // Lọc danh sách người dùng theo email khi có giá trị tìm kiếm
+  const filteredUsers = searchTerm
+    ? usersData?.content.filter((user) =>
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : usersData?.content;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page); // Cập nhật trang khi thay đổi
@@ -70,8 +85,8 @@ const Users = () => {
               />
             </div>
           </div>
-          {usersData && <UserTable users={usersData.content} />}{" "}
-          {/* Truyền dữ liệu người dùng vào bảng */}
+          {filteredUsers && <UserTable users={filteredUsers} />}{" "}
+          {/* Truyền dữ liệu người dùng đã lọc vào bảng */}
           <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
             <Pagination
               currentPage={currentPage}

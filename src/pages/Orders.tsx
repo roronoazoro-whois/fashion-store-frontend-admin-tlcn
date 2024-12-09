@@ -15,6 +15,14 @@ const Orders = () => {
   const [currentPage, setCurrentPage] = useState(0); // Trang bắt đầu từ 1
   const [totalPages, setTotalPages] = useState(0); // Tổng số trang
   const [orders, setOrders] = useState<OrderSummary[]>([]); // Trạng thái lưu danh sách đơn hàng
+  const [searchQuery, setSearchQuery] = useState<string>(""); // Lưu giá trị mã đơn hàng tìm kiếm
+
+  useEffect(() => {
+    // Khi searchQuery thay đổi, reset currentPage về 0
+    if (searchQuery) {
+      setCurrentPage(0); // Reset currentPage về 0 khi bắt đầu tìm kiếm
+    }
+  }, [searchQuery]); // Effect này sẽ chạy khi searchQuery thay đổi
 
   useEffect(() => {
     console.log("Fetching orders for page:", currentPage);
@@ -24,26 +32,33 @@ const Orders = () => {
         if (!token) {
           throw new Error("Token is undefined");
         }
-        const data = await getOrders(
-          currentPage,
-          15, // Mỗi trang có 15 sản phẩm
-          token
-        );
+        const pageSize = searchQuery ? 200 : 15; // Điều chỉnh số lượng sản phẩm mỗi trang
+        const data = await getOrders(currentPage, pageSize, token);
         console.log("Fetched orders:", data);
         setOrders(data.content);
-        setTotalPages(data.totalPages); // Cập nhật tổng số trang từ API
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
 
     fetchOrders();
-  }, [currentPage]);
+  }, [currentPage, searchQuery]); // Chạy lại khi `currentPage` hoặc `searchQuery` thay đổi
 
   // Hàm thay đổi trang
   const handlePageChange = (page: number) => {
     setCurrentPage(page); // Cập nhật trang
   };
+
+  // Hàm lọc đơn hàng theo mã đơn hàng
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value); // Cập nhật giá trị tìm kiếm
+  };
+
+  // Lọc đơn hàng theo mã đơn hàng (id)
+  const filteredOrders = orders.filter((order) => {
+    return order.id.toString().includes(searchQuery); // Tìm đơn hàng theo mã đơn hàng
+  });
 
   return (
     <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
@@ -64,17 +79,22 @@ const Orders = () => {
                 type="text"
                 className="w-60 h-10 border dark:bg-blackPrimary bg-white border-gray-600 dark:text-whiteSecondary text-blackPrimary outline-0 indent-10 dark:focus:border-gray-500 focus:border-gray-400"
                 placeholder="Nhập mã đơn hàng"
+                value={searchQuery}
+                onChange={handleSearchChange} // Cập nhật khi người dùng nhập mã đơn hàng
               />
             </div>
           </div>
-          <OrderTable orders={orders} />
-          <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </div>
+          <OrderTable orders={filteredOrders} />{" "}
+          {/* Hiển thị đơn hàng đã lọc */}
+          {!searchQuery && ( // Chỉ hiển thị phân trang khi không có tìm kiếm
+            <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 py-6 max-sm:flex-col gap-4 max-sm:pt-6 max-sm:pb-0">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

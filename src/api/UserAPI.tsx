@@ -126,7 +126,7 @@ export const getUsersList = async (
     };
 
     const response = await axios.get<UsersListResponse>(
-      `${BASE_URL}/all?page=${page + 1}&size=${size}`,
+      `${BASE_URL}/all?page=${page + 1}&size=${size + 1}`,
       { headers }
     );
 
@@ -326,7 +326,7 @@ export const toggleUserAccount = async (
     } else {
       throw new Error(response.data.message || "Lỗi không xác định"); // Nếu không thành công, ném lỗi
     }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     // Xử lý lỗi khi gọi API
     console.error("Error toggling user account:", error);
