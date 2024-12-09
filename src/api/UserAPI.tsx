@@ -151,6 +151,7 @@ interface UserInfoResponse {
     email: string;
     phoneNumber: string;
     roleName: string;
+    active: boolean;
   };
 }
 
@@ -299,5 +300,36 @@ export const registerUser = async (userData: {
   } catch (error) {
     console.error("Error registering user:", error);
     throw error; // Ném lỗi để xử lý ở nơi khác nếu cần
+  }
+};
+
+export const toggleUserAccount = async (
+  username: string,
+  token: string
+): Promise<string> => {
+  try {
+    // Gọi PUT request để thay đổi trạng thái tài khoản người dùng
+    const response = await axios.put<UpdateRoleResponse>(
+      `${BASE_URL}/change-status/${username}`,
+      {}, // Không cần body, chỉ cần URL với username và headers
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Kiểm tra kết quả trả về
+    if (response.data.success) {
+      return response.data.message; // Trả về thông báo thành công
+    } else {
+      throw new Error(response.data.message || "Lỗi không xác định"); // Nếu không thành công, ném lỗi
+    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    // Xử lý lỗi khi gọi API
+    console.error("Error toggling user account:", error);
+    throw new Error(error.response?.data?.message || "Lỗi không xác định"); // Trả về lỗi chi tiết từ server nếu có
   }
 };

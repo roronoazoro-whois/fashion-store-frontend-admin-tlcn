@@ -1,6 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getUserInfoByUsername, updateUserRole } from "../api/UserAPI";
+import {
+  getUserInfoByUsername,
+  toggleUserAccount,
+  updateUserRole,
+} from "../api/UserAPI";
 import { InputWithLabel, Sidebar, SimpleInput } from "../components";
 import { getUserFromLocalStorage } from "../utils/authUtils";
 import { FaShieldAlt } from "react-icons/fa";
@@ -17,6 +21,8 @@ const EditUser = () => {
   });
   const [role, setRole] = useState("USER");
   const [loading, setLoading] = useState(false); // Trạng thái loading cho nút cập nhật
+  const [active, setActive] = useState(false); // Trạng thái khóa tài khoản
+  const [showModal, setShowModal] = useState(false); // Trạng thái hiển thị modal
 
   // Hàm gọi API lấy thông tin người dùng
   const fetchUserInfo = async () => {
@@ -41,6 +47,7 @@ const EditUser = () => {
 
         // Cập nhật quyền người dùng
         setRole(userData.roleName || "USER");
+        setActive(userData.active); // Cập nhật trạng thái tài khoản
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -52,7 +59,7 @@ const EditUser = () => {
     if (email) {
       fetchUserInfo();
     }
-  }, [email]); // Lắng nghe `email` để gọi lại API mỗi khi email thay đổi
+  }, [email]); // Lắng nghe email để gọi lại API mỗi khi email thay đổi
 
   const handleRoleUpdate = async () => {
     setLoading(true); // Bắt đầu trạng thái loading
@@ -87,10 +94,39 @@ const EditUser = () => {
     setLoading(false); // Kết thúc trạng thái loading
   };
 
+  // Hàm xử lý khóa/mở khóa tài khoản
+  const handleAccountLock = async () => {
+    const token = getUserFromLocalStorage()?.token; // Lấy token từ localStorage
+    if (!token) {
+      console.error("Token không hợp lệ");
+      toast.error("Token không hợp lệ");
+      return;
+    }
+
+    if (email) {
+      try {
+        const message = await toggleUserAccount(email, token); // Gọi API để thay đổi trạng thái tài khoản
+        toast.success(message); // Hiển thị thông báo thành công
+
+        // Cập nhật lại trạng thái của tài khoản
+        setActive(!active); // Đảo ngược trạng thái khóa tài khoản
+      } catch (error: unknown) {
+        // Kiểm tra nếu error là đối tượng Error
+        if (error instanceof Error) {
+          toast.error(`Thao tác thất bại: ${error.message}`); // Thông báo lỗi
+        } else {
+          toast.error("Thao tác thất bại: Lỗi không xác định"); // Thông báo lỗi không xác định
+        }
+      }
+    }
+
+    setShowModal(false); // Đóng modal sau khi thực hiện xong
+  };
+
   return (
     <div className="h-auto border-t border-blackSecondary border-1 flex dark:bg-blackPrimary bg-whiteSecondary">
       <Sidebar />
-      <div className="dark:bg-blackPrimary bg-whiteSecondary w-full ">
+      <div className="dark:bg-blackPrimary bg-whiteSecondary w-full">
         <div className="dark:bg-blackPrimary bg-whiteSecondary py-10">
           <div className="px-4 sm:px-6 lg:px-8 pb-8 pt-8 grid grid-cols-2 gap-x-10 max-xl:grid-cols-1 max-xl:gap-y-10">
             {/* Left div */}
@@ -110,7 +146,6 @@ const EditUser = () => {
                   />
                   <FaShieldAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 opacity-70" />
                 </InputWithLabel>
-
                 <InputWithLabel label="Email">
                   <SimpleInput
                     type="email"
@@ -121,7 +156,6 @@ const EditUser = () => {
                   />
                   <FaShieldAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 opacity-70" />
                 </InputWithLabel>
-
                 <InputWithLabel label="Vai trò">
                   <SimpleInput
                     type="text"
@@ -132,7 +166,6 @@ const EditUser = () => {
                   />
                   <FaShieldAlt className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 opacity-70" />
                 </InputWithLabel>
-
                 <InputWithLabel label="Số điện thoại">
                   <SimpleInput
                     type="text"
@@ -167,6 +200,19 @@ const EditUser = () => {
                     </button>
                   </div>
                 </InputWithLabel>
+
+                <div className="mt-6">
+                  <button
+                    onClick={() => setShowModal(true)} // Hiển thị modal
+                    className={`px-6 py-2 rounded-md w-full sm:w-auto whitespace-nowrap text-center ${
+                      active
+                        ? "bg-red-700 hover:bg-red-600 text-white"
+                        : "bg-green-600 hover:bg-green-500 text-white"
+                    }`}
+                  >
+                    {active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -189,6 +235,39 @@ const EditUser = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal for locking/unlocking account */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-md w-1/3">
+            <h4 className="text-lg font-semibold mb-4">
+              {active ? "Khóa tài khoản?" : "Mở khóa tài khoản?"}
+            </h4>
+            <p>
+              Bạn có chắc chắn muốn {active ? "khóa" : "mở khóa"} tài khoản của
+              người dùng này?
+            </p>
+            <div className="mt-6 flex justify-end space-x-4">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-gray-400 text-white rounded-md"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleAccountLock}
+                className={`px-6 py-2 rounded-md ${
+                  active
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-green-600 hover:bg-green-700"
+                } text-white`}
+              >
+                {active ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
