@@ -17,7 +17,7 @@ const Sidebar = () => {
   const navigate = useNavigate(); // Use navigate for page redirection
 
   // Accessing user context for logout
-  const { logout } = useUser();
+  const { user, logout } = useUser();
 
   // Determine the sidebar class based on isSidebarOpen
   const sidebarClass: string = isSidebarOpen
@@ -30,7 +30,7 @@ const Sidebar = () => {
     "block flex items-center self-stretch gap-4 py-4 px-6 dark:bg-blackPrimary dark:hover:bg-blackSecondary cursor-pointer max-xl:py-3 dark:text-whiteSecondary hover:bg-white text-blackPrimary bg-whiteSecondary";
 
   const handleLogout = () => {
-    toast.error("Đăng xuất thành công!"); // Thông báo thành công
+    toast.success("Đăng xuất thành công!"); // Thông báo thành công
 
     // Chờ một khoảng thời gian để thông báo có thể hiển thị, sau đó mới chuyển hướng
     setTimeout(() => {
@@ -91,15 +91,17 @@ const Sidebar = () => {
             <HiOutlineTruck className="text-xl" />
             <span className="text-lg">Đơn hàng</span>
           </NavLink>
-          <NavLink
-            to="/users"
-            className={(isActiveObj) =>
-              isActiveObj.isActive ? navActiveClass : navInactiveClass
-            }
-          >
-            <HiOutlineUser className="text-xl" />
-            <span className="text-lg">Người dùng</span>
-          </NavLink>
+          {user?.role === "ADMIN" && (
+            <NavLink
+              to="/users"
+              className={(isActiveObj) =>
+                isActiveObj.isActive ? navActiveClass : navInactiveClass
+              }
+            >
+              <HiOutlineUser className="text-xl" />
+              <span className="text-lg">Người dùng</span>
+            </NavLink>
+          )}
           <button
             onClick={handleLogout}
             className="block flex items-center gap-4 py-4 px-6 dark:bg-red-600 bg-red-600 text-white cursor-pointer max-xl:py-3 rounded-lg transition-all duration-300 hover:bg-red-700 hover:shadow-lg ml-6 mr-6 mt-4 mb-4"

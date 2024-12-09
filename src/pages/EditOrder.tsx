@@ -128,6 +128,15 @@ const EditOrder = () => {
               >
                 Updated at: {new Date(status.updateAt).toLocaleString()}
               </p>
+              <p
+                className={`text-sm ${
+                  index === 0
+                    ? "text-blue-600 dark:text-blue-400"
+                    : "text-gray-500"
+                }`}
+              >
+                Updated By: {status.updatedBy}
+              </p>
             </div>
           ))}
         </div>

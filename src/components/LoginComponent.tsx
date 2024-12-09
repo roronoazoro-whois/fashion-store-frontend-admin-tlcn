@@ -58,10 +58,10 @@ const LoginComponent = () => {
 
   const handleLoginSubmit = async (data: LoginFormData) => {
     try {
-      console.log("Form submitted with data:", data)
+      console.log("Form submitted with data:", data);
       const response = await loginUser(data);
       const userData = response.data;
-      if (userData?.role !== "ADMIN") {
+      if (userData?.role !== "ADMIN" && userData?.role !== "STAFF") {
         setLoginErrorMessage("Bạn không có quyền truy cập trang này.");
         return;
       }
