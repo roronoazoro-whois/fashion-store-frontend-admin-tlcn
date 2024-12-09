@@ -11,9 +11,9 @@ const Landing = () => {
             <Welcome>
               <Welcome.Title>Xin chào,</Welcome.Title>
               <Welcome.Description>
-                Đây là cái nhìn tổng quan đầy đủ về cửa hàng thương mại điện tử
-                của bạn. Hãy phân tích các số liệu và đưa ra quyết định thông
-                minh.
+                Đây là tổng quan về cửa hàng của bạn. Dưới đây là các thống kê
+                quan trọng để giúp bạn quản lý và phát triển cửa hàng dễ dàng
+                hơn.
               </Welcome.Description>
               <Welcome.ActionButton
                 onClick={() => console.log("Đang phân tích...")}
@@ -23,27 +23,45 @@ const Landing = () => {
             </Welcome>
             <Stats />
           </div>
+
+          {/* Tổng quan về Lưu lượng truy cập */}
           <div className="sm:w-[66%] mt-10 max-sm:w-[80%]">
             <h3 className="text-3xl dark:text-whiteSecondary text-blackPrimary font-bold mb-7 max-sm:text-2xl">
-              Tổng quan về Lưu lượng truy cập
+              Lưu lượng truy cập (Website)
             </h3>
             <LineGraph />
+            <p className="text-sm text-gray-500 mt-2">
+              Dữ liệu về số lượt truy cập hàng ngày giúp bạn nắm bắt xu hướng
+              người dùng trên website.
+            </p>
           </div>
+
+          {/* Tổng quan về Đơn hàng */}
           <div className="sm:w-[66%] mt-10 max-sm:w-[80%]">
             <h3 className="text-3xl dark:text-whiteSecondary text-blackPrimary font-bold mb-7 max-sm:text-2xl">
-              Tổng quan về Đơn hàng
+              Đơn hàng (Tháng này)
             </h3>
             <BarChart />
+            <p className="text-sm text-gray-500 mt-2">
+              Theo dõi số lượng đơn hàng và doanh thu của bạn trong tháng này.
+            </p>
           </div>
+
+          {/* Tổng quan về Nguồn gốc khách hàng */}
           <div className="sm:w-[50%] mt-10 max-sm:w-[70%]">
             <h3 className="text-3xl dark:text-whiteSecondary text-blackPrimary font-bold mb-7 max-sm:text-2xl">
-              Tổng quan về Nguồn gốc
+              Nguồn gốc khách hàng
             </h3>
             <PieChart />
+            <p className="text-sm text-gray-500 mt-2">
+              Phân tích các nguồn gốc khách hàng (từ quảng cáo, tìm kiếm, giới
+              thiệu, v.v.) để tối ưu chiến lược marketing.
+            </p>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default Landing;
